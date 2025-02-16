@@ -168,7 +168,8 @@ function initialize() {
         }
         const dirName = answers.projectName.toLowerCase().replace(/\s+/g, '-');
         const projectPath = path_1.default.resolve(process.cwd(), dirName);
-        const templatePath = path_1.default.resolve(process.cwd(), 'template');
+        const templatePath = path_1.default.resolve(__dirname, 'template');
+        console.log(templatePath);
         if (fs_1.default.existsSync(projectPath) && !fs_1.default.statSync(projectPath).isDirectory()) {
             fs_1.default.rmSync(projectPath);
         }
