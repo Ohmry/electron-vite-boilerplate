@@ -1,11 +1,11 @@
 {
   "name": "@ohmry/create-electron-vite",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Boilerplate project for electron-vite",
-  "main": "dist/index.js",
+  "main": "index.js",
   "homepage": "https://github.com/Ohmry/electron-vite-boilerplate",
   "bin": {
-    "create-electron-vite": "./dist/index.js"
+    "create-electron-vite": "index.js"
   },
   "repository": {
     "type": "git",

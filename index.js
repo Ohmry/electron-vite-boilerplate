@@ -18,110 +18,115 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 function inquery() {
     return __awaiter(this, void 0, void 0, function* () {
-        const projectNameAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'input',
-                name: 'projectName',
-                message: 'Project Name:',
-                default: 'electron-vite-project'
-            }
-        ]);
-        const projectPath = path_1.default.resolve(process.cwd(), projectNameAnswer.projectName);
-        if (fs_1.default.existsSync(projectPath)) {
-            if (fs_1.default.statSync(projectPath).isDirectory()) {
-                const overwriteAnswer = yield inquirer_1.default.prompt([
-                    {
-                        type: 'confirm',
-                        name: 'overwrite',
-                        message: 'The directory already exists. Do you want to overwrite all files related to project initialization in the folder?',
-                        default: true
+        try {
+            const projectNameAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'input',
+                    name: 'projectName',
+                    message: 'Project Name:',
+                    default: 'electron-vite-project'
+                }
+            ]);
+            const projectPath = path_1.default.resolve(process.cwd(), projectNameAnswer.projectName);
+            if (fs_1.default.existsSync(projectPath)) {
+                if (fs_1.default.statSync(projectPath).isDirectory()) {
+                    const overwriteAnswer = yield inquirer_1.default.prompt([
+                        {
+                            type: 'confirm',
+                            name: 'overwrite',
+                            message: 'The directory already exists. Do you want to overwrite all files related to project initialization in the folder?',
+                            default: true
+                        }
+                    ]);
+                    if (!overwriteAnswer.overwrite) {
+                        process.exit();
                     }
-                ]);
-                if (!overwriteAnswer.overwrite) {
-                    process.exit();
+                }
+                else {
+                    const overwriteAnswer = yield inquirer_1.default.prompt([
+                        {
+                            type: 'confirm',
+                            name: 'overwrite',
+                            message: 'The file already exists. Do you want to delete it and create the project?',
+                            default: true
+                        }
+                    ]);
+                    if (!overwriteAnswer.overwrite) {
+                        process.exit(1);
+                    }
                 }
             }
-            else {
-                const overwriteAnswer = yield inquirer_1.default.prompt([
-                    {
-                        type: 'confirm',
-                        name: 'overwrite',
-                        message: 'The file already exists. Do you want to delete it and create the project?',
-                        default: true
-                    }
-                ]);
-                if (!overwriteAnswer.overwrite) {
-                    process.exit(1);
+            const authorNameAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'input',
+                    name: 'author',
+                    message: 'Author:',
+                    default: 'anonymous'
                 }
-            }
+            ]);
+            const versionAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'input',
+                    name: 'version',
+                    message: 'Version:',
+                    default: '1.0.0'
+                }
+            ]);
+            const descriptionAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'input',
+                    name: 'description',
+                    message: 'Description:',
+                    default: 'Electron-Vite application with Typescript'
+                }
+            ]);
+            const homepageAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'input',
+                    name: 'homepage',
+                    message: 'Homepage:'
+                }
+            ]);
+            const licenseAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'list',
+                    name: 'license',
+                    message: 'License',
+                    choices: [
+                        'MIT',
+                        'Apache-2.0',
+                        'GPL-3.0',
+                        'BSD-3-Clause',
+                        'None'
+                    ]
+                }
+            ]);
+            const dependenciesAnswer = yield inquirer_1.default.prompt([
+                {
+                    type: 'checkbox',
+                    name: 'dependencies',
+                    message: 'Dependencies',
+                    choices: [
+                        { name: 'Sass', value: 'sass' },
+                        { name: 'Bootstrap Icons', value: 'bootstrap-icons' },
+                        { name: 'FlatIcon Uicons', value: '@flaticon/flaticon-uicons' }
+                    ],
+                    default: ['sass']
+                }
+            ]);
+            return {
+                projectName: projectNameAnswer.projectName,
+                dependencies: dependenciesAnswer.dependencies,
+                author: authorNameAnswer.author,
+                description: descriptionAnswer.description,
+                homepage: homepageAnswer.homepage,
+                license: licenseAnswer.license,
+                version: versionAnswer.version
+            };
         }
-        const authorNameAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'input',
-                name: 'author',
-                message: 'Author:',
-                default: 'anonymous'
-            }
-        ]);
-        const versionAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'input',
-                name: 'version',
-                message: 'Version:',
-                default: '1.0.0'
-            }
-        ]);
-        const descriptionAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'input',
-                name: 'description',
-                message: 'Description:',
-                default: 'Electron-Vite application with Typescript'
-            }
-        ]);
-        const homepageAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'input',
-                name: 'homepage',
-                message: 'Homepage:'
-            }
-        ]);
-        const licenseAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'list',
-                name: 'license',
-                message: 'License',
-                choices: [
-                    'MIT',
-                    'Apache-2.0',
-                    'GPL-3.0',
-                    'BSD-3-Clause',
-                    'None'
-                ]
-            }
-        ]);
-        const dependenciesAnswer = yield inquirer_1.default.prompt([
-            {
-                type: 'checkbox',
-                name: 'dependencies',
-                message: 'Dependencies',
-                choices: [
-                    { name: 'Sass', value: 'sass' },
-                    { name: 'Bootstrap Icons', value: 'bootstrap-icons' },
-                    { name: 'FlatIcon Uicons', value: '@flaticon/flaticon-uicons' }
-                ],
-                default: ['sass']
-            }
-        ]);
-        return {
-            projectName: projectNameAnswer.projectName,
-            dependencies: dependenciesAnswer.dependencies,
-            author: authorNameAnswer.author,
-            description: descriptionAnswer.description,
-            homepage: homepageAnswer.homepage,
-            license: licenseAnswer.license,
-            version: versionAnswer.version
-        };
+        catch (e) {
+            return undefined;
+        }
     });
 }
 function createReadme(packageJson) {
@@ -155,6 +160,12 @@ function createReadme(packageJson) {
 function initialize() {
     return __awaiter(this, void 0, void 0, function* () {
         const answers = yield inquery();
+        if (answers === undefined) {
+            console.log();
+            console.log(' 💀 Aborted!');
+            console.log();
+            return;
+        }
         const dirName = answers.projectName.toLowerCase().replace(/\s+/g, '-');
         const projectPath = path_1.default.resolve(process.cwd(), dirName);
         const templatePath = path_1.default.resolve(process.cwd(), 'template');

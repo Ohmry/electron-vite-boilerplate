@@ -27,120 +27,124 @@ interface PackageJson {
   devDependencies: Record<string, string>
 }
 
-async function inquery(): Promise<Answer> {
-  const projectNameAnswer = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'projectName',
-      message: 'Project Name:',
-      default: 'electron-vite-project'
-    }
-  ])
-
-  const projectPath = path.resolve(process.cwd(), projectNameAnswer.projectName)
-  if (fs.existsSync(projectPath)) {
-    if (fs.statSync(projectPath).isDirectory()) {
-      const overwriteAnswer = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'overwrite',
-          message: 'The directory already exists. Do you want to overwrite all files related to project initialization in the folder?',
-          default: true
-        }
-      ])
-
-      if (!overwriteAnswer.overwrite) {
-        process.exit()
+async function inquery(): Promise<Answer | undefined> {
+  try {
+    const projectNameAnswer = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'projectName',
+        message: 'Project Name:',
+        default: 'electron-vite-project'
       }
-    } else {
-      const overwriteAnswer = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'overwrite',
-          message: 'The file already exists. Do you want to delete it and create the project?',
-          default: true
+    ])
+  
+    const projectPath = path.resolve(process.cwd(), projectNameAnswer.projectName)
+    if (fs.existsSync(projectPath)) {
+      if (fs.statSync(projectPath).isDirectory()) {
+        const overwriteAnswer = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'overwrite',
+            message: 'The directory already exists. Do you want to overwrite all files related to project initialization in the folder?',
+            default: true
+          }
+        ])
+  
+        if (!overwriteAnswer.overwrite) {
+          process.exit()
         }
-      ])
-
-      if (!overwriteAnswer.overwrite) {
-        process.exit(1)
+      } else {
+        const overwriteAnswer = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'overwrite',
+            message: 'The file already exists. Do you want to delete it and create the project?',
+            default: true
+          }
+        ])
+  
+        if (!overwriteAnswer.overwrite) {
+          process.exit(1)
+        }
       }
     }
+  
+    const authorNameAnswer = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'author',
+        message: 'Author:',
+        default: 'anonymous'
+      }
+    ])
+  
+    const versionAnswer = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'version',
+        message: 'Version:',
+        default: '1.0.0'
+      }
+    ])
+  
+    const descriptionAnswer = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Description:',
+        default: 'Electron-Vite application with Typescript'
+      }
+    ])
+  
+    const homepageAnswer = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'homepage',
+        message: 'Homepage:'
+      }
+    ])
+  
+    const licenseAnswer = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'license',
+        message: 'License',
+        choices: [
+          'MIT',
+          'Apache-2.0',
+          'GPL-3.0',
+          'BSD-3-Clause',
+          'None'
+        ]
+      }
+    ])
+  
+    const dependenciesAnswer = await inquirer.prompt([
+      {
+        type: 'checkbox',
+        name: 'dependencies',
+        message: 'Dependencies',
+        choices: [
+          { name: 'Sass', value: 'sass' },
+          { name: 'Bootstrap Icons', value: 'bootstrap-icons'},
+          { name: 'FlatIcon Uicons', value: '@flaticon/flaticon-uicons'}
+        ],
+        default: ['sass']
+      }
+    ])
+  
+    return {
+      projectName: projectNameAnswer.projectName,
+      dependencies: dependenciesAnswer.dependencies,
+      author: authorNameAnswer.author,
+      description: descriptionAnswer.description,
+      homepage: homepageAnswer.homepage,
+      license: licenseAnswer.license,
+      version: versionAnswer.version
+    } as Answer
+  } catch (e) {
+    return undefined
   }
-
-  const authorNameAnswer = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'author',
-      message: 'Author:',
-      default: 'anonymous'
-    }
-  ])
-
-  const versionAnswer = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'version',
-      message: 'Version:',
-      default: '1.0.0'
-    }
-  ])
-
-  const descriptionAnswer = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'description',
-      message: 'Description:',
-      default: 'Electron-Vite application with Typescript'
-    }
-  ])
-
-  const homepageAnswer = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'homepage',
-      message: 'Homepage:'
-    }
-  ])
-
-  const licenseAnswer = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'license',
-      message: 'License',
-      choices: [
-        'MIT',
-        'Apache-2.0',
-        'GPL-3.0',
-        'BSD-3-Clause',
-        'None'
-      ]
-    }
-  ])
-
-  const dependenciesAnswer = await inquirer.prompt([
-    {
-      type: 'checkbox',
-      name: 'dependencies',
-      message: 'Dependencies',
-      choices: [
-        { name: 'Sass', value: 'sass' },
-        { name: 'Bootstrap Icons', value: 'bootstrap-icons'},
-        { name: 'FlatIcon Uicons', value: '@flaticon/flaticon-uicons'}
-      ],
-      default: ['sass']
-    }
-  ])
-
-  return {
-    projectName: projectNameAnswer.projectName,
-    dependencies: dependenciesAnswer.dependencies,
-    author: authorNameAnswer.author,
-    description: descriptionAnswer.description,
-    homepage: homepageAnswer.homepage,
-    license: licenseAnswer.license,
-    version: versionAnswer.version
-  } as Answer
 }
 
 function createReadme(packageJson: PackageJson): string {
@@ -173,7 +177,15 @@ function createReadme(packageJson: PackageJson): string {
 }
 
 async function initialize(): Promise<void> {
-  const answers: Answer = await inquery()
+  const answers: Answer | undefined = await inquery()
+
+  if (answers === undefined) {
+    console.log()
+    console.log(' 💀 Aborted!')
+    console.log()
+    return
+  }
+
   const dirName = answers.projectName.toLowerCase().replace(/\s+/g, '-')
   const projectPath = path.resolve(process.cwd(), dirName)
   const templatePath = path.resolve(process.cwd(), 'template')
