@@ -1,0 +1,40 @@
+{
+  "name": "@ohmry/create-electron-vite",
+  "version": "1.0.0",
+  "description": "Boilerplate project for electron-vite",
+  "main": "dist/index.js",
+  "homepage": "https://github.com/Ohmry/electron-vite-boilerplate",
+  "bin": {
+    "create-electron-vite": "./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ohmry/electron-vite-boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ohmry/electron-vite-boilerplate/issues"
+},
+  "scripts": {
+    "format": "prettier --write .",
+    "dev": "npx ts-node src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Ohmry <o.ohmry@gmail.com>",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "inquirer": "^12.4.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
+    "@types/node": "^22.13.4",
+    "@eslint/js": "^9.20.0",
+    "@types/inquirer": "^9.0.7",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "prettier": "^3.5.1",
+    "typescript-eslint": "^8.24.0"
+  }
+}
