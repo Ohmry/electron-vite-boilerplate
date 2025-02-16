@@ -37,7 +37,7 @@ async function inquery(): Promise<Answer | undefined> {
         default: 'electron-vite-project'
       }
     ])
-  
+
     const projectPath = path.resolve(process.cwd(), projectNameAnswer.projectName)
     if (fs.existsSync(projectPath)) {
       if (fs.statSync(projectPath).isDirectory()) {
@@ -49,7 +49,7 @@ async function inquery(): Promise<Answer | undefined> {
             default: true
           }
         ])
-  
+
         if (!overwriteAnswer.overwrite) {
           process.exit()
         }
@@ -62,13 +62,13 @@ async function inquery(): Promise<Answer | undefined> {
             default: true
           }
         ])
-  
+
         if (!overwriteAnswer.overwrite) {
           process.exit(1)
         }
       }
     }
-  
+
     const authorNameAnswer = await inquirer.prompt([
       {
         type: 'input',
@@ -77,7 +77,7 @@ async function inquery(): Promise<Answer | undefined> {
         default: 'anonymous'
       }
     ])
-  
+
     const versionAnswer = await inquirer.prompt([
       {
         type: 'input',
@@ -86,7 +86,7 @@ async function inquery(): Promise<Answer | undefined> {
         default: '1.0.0'
       }
     ])
-  
+
     const descriptionAnswer = await inquirer.prompt([
       {
         type: 'input',
@@ -95,7 +95,7 @@ async function inquery(): Promise<Answer | undefined> {
         default: 'Electron-Vite application with Typescript'
       }
     ])
-  
+
     const homepageAnswer = await inquirer.prompt([
       {
         type: 'input',
@@ -103,22 +103,16 @@ async function inquery(): Promise<Answer | undefined> {
         message: 'Homepage:'
       }
     ])
-  
+
     const licenseAnswer = await inquirer.prompt([
       {
         type: 'list',
         name: 'license',
         message: 'License',
-        choices: [
-          'MIT',
-          'Apache-2.0',
-          'GPL-3.0',
-          'BSD-3-Clause',
-          'None'
-        ]
+        choices: ['MIT', 'Apache-2.0', 'GPL-3.0', 'BSD-3-Clause', 'None']
       }
     ])
-  
+
     const dependenciesAnswer = await inquirer.prompt([
       {
         type: 'checkbox',
@@ -126,13 +120,13 @@ async function inquery(): Promise<Answer | undefined> {
         message: 'Dependencies',
         choices: [
           { name: 'Sass', value: 'sass' },
-          { name: 'Bootstrap Icons', value: 'bootstrap-icons'},
-          { name: 'FlatIcon Uicons', value: '@flaticon/flaticon-uicons'}
+          { name: 'Bootstrap Icons', value: 'bootstrap-icons' },
+          { name: 'FlatIcon Uicons', value: '@flaticon/flaticon-uicons' }
         ],
         default: ['sass']
       }
     ])
-  
+
     return {
       projectName: projectNameAnswer.projectName,
       dependencies: dependenciesAnswer.dependencies,
@@ -143,6 +137,7 @@ async function inquery(): Promise<Answer | undefined> {
       version: versionAnswer.version
     } as Answer
   } catch (e) {
+    console.error(e as Error)
     return undefined
   }
 }
@@ -195,7 +190,7 @@ async function initialize(): Promise<void> {
   }
 
   fs.mkdirSync(projectPath, { recursive: true })
-  fs.cpSync(templatePath, projectPath, {recursive: true})
+  fs.cpSync(templatePath, projectPath, { recursive: true })
 
   const packageJsonPath = path.join(projectPath, 'package.json')
   if (fs.existsSync(packageJsonPath)) {
@@ -207,7 +202,7 @@ async function initialize(): Promise<void> {
     packageJson.author = answers.author
     packageJson.homepage = answers.homepage
     packageJson.license = answers.license
-    
+
     if (answers.dependencies.includes('sass')) {
       packageJson.devDependencies['sass'] = '^1.83.1'
       packageJson.devDependencies['concurrently'] = '^9.1.2'
@@ -215,7 +210,7 @@ async function initialize(): Promise<void> {
       packageJson.scripts['sass:watch'] = 'sass -w src/renderer/assets/sass:src/renderer/assets/css --style compressed'
       packageJson.scripts['dev'] = 'concurrently --kill-others-on-fail "npm run sass:watch" "electron-vite dev"'
     }
-    
+
     if (answers.dependencies.includes('bootstrap-icons')) {
       packageJson.dependencies['bootstrap-icons'] = '^1.11.3'
     }
@@ -232,6 +227,10 @@ async function initialize(): Promise<void> {
       fs.rmSync(readmePath)
     }
     fs.writeFileSync(readmePath, readme)
+
+    // Create core folder
+    const corePath = path.join(projectPath, 'src', 'core')
+    fs.mkdirSync(corePath, { recursive: true })
   } else {
     console.error('package.json file is not exists')
   }
