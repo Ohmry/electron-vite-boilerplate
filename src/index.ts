@@ -188,7 +188,7 @@ async function initialize(): Promise<void> {
 
   const dirName = answers.projectName.toLowerCase().replace(/\s+/g, '-')
   const projectPath = path.resolve(process.cwd(), dirName)
-  const templatePath = path.resolve(process.cwd(), 'template')
+  const templatePath = path.resolve(__dirname, 'template')
 
   if (fs.existsSync(projectPath) && !fs.statSync(projectPath).isDirectory()) {
     fs.rmSync(projectPath)
